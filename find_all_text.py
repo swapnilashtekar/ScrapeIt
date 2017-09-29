@@ -20,4 +20,19 @@ def text_from_html(body):
 
 
 html = urllib.urlopen(raw_input()).read()
-print(text_from_html(html))
+readable_content = text_from_html(html).split(' ')
+
+hash_map = dict()
+
+for word in readable_content:
+    #print word
+    word = word.strip()
+    if word in hash_map:
+        hash_map[word] += 1
+    else:
+        hash_map[word] = 1
+
+for key in hash_map:
+    if hash_map[key] > 1:
+        print key, hash_map[key]
+
