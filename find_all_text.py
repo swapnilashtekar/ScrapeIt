@@ -29,14 +29,14 @@ def text_from_html(body):
     return u" ".join(t.strip() for t in visible_texts)
 
 
-def insert_data(dataDate, hash_map):
+def insert_data(dataDate, word, count):
     conn = pymysql.connect(host=hostname,
                              user=username,
                              password=passwd,
                              port=port,
                              db=dbname,
                              charset='utf8mb4')
-
+    logger.info("dataDate : {0} word : {1} count : {2}".format(dataDate, word, count))
     try:
         with conn.cursor() as cursor:
             # Create a new record
@@ -101,7 +101,7 @@ logger.info("Inserting data in database")
 
 for key in hash_map:
     if hash_map[key] > 0:
-        insert_data(dataDate, hash_map)
+        insert_data(dataDate, key, hash_map[key])
 
 """
 try:
