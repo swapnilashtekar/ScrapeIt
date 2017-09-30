@@ -1,0 +1,7 @@
+{
+	"host": "localhost",
+ 	"dbname": "testdb.wordCount",
+ 	"username":"root",
+ 	"password": "password",
+ 	"port": 3306
+}
