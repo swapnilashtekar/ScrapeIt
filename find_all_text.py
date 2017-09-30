@@ -60,7 +60,7 @@ hash_map = dict()
 for word in readable_content:
     #print word
     if word.isalnum():
-        word = word.strip()
+        word = word.strip().lower()
 
         count = hash_map.get(word, 0)
         hash_map[word] = count + 1
