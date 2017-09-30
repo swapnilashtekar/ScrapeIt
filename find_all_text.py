@@ -102,19 +102,3 @@ logger.info("Inserting data in database")
 for key in hash_map:
     if hash_map[key] > 0:
         insert_data(dataDate, key, hash_map[key])
-
-"""
-try:
-  cnx = mysql.connector.connect(user='scott',
-                                database='testt')
-except mysql.connector.Error as err:
-  if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-    logger.error("Something is wrong with your user name or password")
-  elif err.errno == errorcode.ER_BAD_DB_ERROR:
-    logger.error("Database does not exist")
-  else:
-    logger.error(err)
-else:
-  cnx.close()
-"""
-
