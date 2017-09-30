@@ -25,13 +25,20 @@ readable_content = text_from_html(html).split(' ')
 hash_map = dict()
 
 for word in readable_content:
-    #print word
-    word = word.strip()
-    if word in hash_map:
-        hash_map[word] += 1
-    else:
-        hash_map[word] = 1
+    print word
+    if word.isalnum():
+        word = word.strip()
 
+        count = hash_map.get(word, 0)
+        hash_map[word] = count + 1
+        """
+        if word in hash_map:
+            hash_map[word] += 1
+        else:
+            hash_map[word] = 1
+        """
+
+print "Printing words having count greater than 1: "
 for key in hash_map:
     if hash_map[key] > 1:
         print key, hash_map[key]
