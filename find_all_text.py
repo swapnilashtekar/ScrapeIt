@@ -39,7 +39,8 @@ def insert_data(epoch, input_url, word, word_count):
                             port=port,
                             db=dbname,
                             charset='utf8mb4')
-    logger.debug("dataDate : {0} input_web : {1} word : {2} word type : {3} count : {4}".format(epoch, input_url, word, type(word), word_count))
+    logger.debug("dataDate : {0} input_web : {1} word : {2} word type : {3} count : \
+        {4}".format(epoch, input_url, word, type(word), word_count))
     try:
         with conn.cursor() as cursor:
             # Create a new record
@@ -57,7 +58,7 @@ def insert_data(epoch, input_url, word, word_count):
 logger.info("Enter the website to scrape: ")
 input_url = raw_input()
 html = urllib.urlopen(input_url).read()
-#print text_from_html(html)
+logger.debug(text_from_html(html))
 readable_content = text_from_html(html).split(' ')
 logger.debug("Readable content found if : ".format(readable_content))
 logger.info("Number of words read are : {}".format(len(readable_content)))
@@ -65,10 +66,9 @@ hash_map = dict()
 cant_read = []
 for word in readable_content:
     #print word, type(word), word.encode('utf-8')
+    exclude_punctuations = string.punctuation
     #if word.isalnum():
     #if isinstance(word,unicode ):
-    exclude_punctuations = string.punctuation
-
     for c in exclude_punctuations:
         word = word.replace(c, "")
 
@@ -101,7 +101,8 @@ username = db_config['username']
 passwd = db_config['password']
 port = db_config['port']
 
-logger.debug("DB connection details are : \n hostname : {0} \n dbname : {1} \n username : {2} \n password : {3} \n port : {4}".format(hostname, dbname, username, passwd, port))
+logger.debug("DB connection details are : \n hostname : {0} \n dbname : {1} \n username : {2} \n \
+    password : {3} \n port : {4}".format(hostname, dbname, username, passwd, port))
 
 epoch = datetime.now().strftime('%s')
 logger.info(epoch)
