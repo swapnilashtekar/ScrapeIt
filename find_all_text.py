@@ -4,8 +4,7 @@ import urllib
 import logging
 import pymysql
 from datetime import datetime
-import json
-import time
+import json, time, re, string
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -33,21 +32,21 @@ def text_from_html(body):
     return u" ".join(t.strip() for t in visible_texts)
 
 
-def insert_data(dataDate, input_web, word, count):
+def insert_data(epoch, input_url, word, word_count):
     conn = pymysql.connect(host=hostname,
-                             user=username,
-                             password=passwd,
-                             port=port,
-                             db=dbname,
-                             charset='utf8mb4')
-    logger.debug("dataDate : {0} input_web : {1} word : {2} word type : {3} count : {4}".format(dataDate, input_web, word, type(word), count))
+                            user=username,
+                            password=passwd,
+                            port=port,
+                            db=dbname,
+                            charset='utf8mb4')
+    logger.debug("dataDate : {0} input_web : {1} word : {2} word type : {3} count : {4}".format(epoch, input_url, word, type(word), word_count))
     try:
         with conn.cursor() as cursor:
             # Create a new record
-            sql = "INSERT INTO `wordCount3` (`dateOnly`, `website`, `word`, `count`) "\
+            sql = "INSERT INTO `wordCountTable` (`epoch`, `url`, `word`, `wordCount`) "\
                 "VALUES (%s, %s, %s, %s)"
 
-            cursor.execute(sql, (dataDate, input_web, word, count))
+            cursor.execute(sql, (epoch, input_url, word, word_count))
 
             logger.debug("Data inserted!")
         conn.commit()
@@ -56,11 +55,11 @@ def insert_data(dataDate, input_web, word, count):
         conn.close()
 
 logger.info("Enter the website to scrape: ")
-input_web = raw_input()
-html = urllib.urlopen(input_web).read()
+input_url = raw_input()
+html = urllib.urlopen(input_url).read()
 #print text_from_html(html)
 readable_content = text_from_html(html).split(' ')
-print readable_content
+logger.debug("Readable content found if : ".format(readable_content))
 logger.info("Number of words read are : {}".format(len(readable_content)))
 hash_map = dict()
 cant_read = []
@@ -68,15 +67,18 @@ for word in readable_content:
     #print word, type(word), word.encode('utf-8')
     #if word.isalnum():
     #if isinstance(word,unicode ):
+    exclude_punctuations = string.punctuation
+
+    for c in exclude_punctuations:
+        word = word.replace(c, "")
+
     word = word.strip().lower()
     word = word.decode('unicode_escape').encode('ascii','ignore')
     if len(word.encode('utf-8')) > 0:
-	#word = word.strip().lower()
-	#word = word.decode('unicode_escape').encode('ascii','ignore')
         count = hash_map.get(word, 0)
         hash_map[word] = count + 1
     else:
-	cant_read.append(word)
+        cant_read.append(word)
 
 logger.debug("Excluded words are : {0} \n Number of excluded words are : {1}".format(cant_read, len(cant_read)))
 logger.debug("Printing words having count greater than 0: ")
@@ -101,12 +103,10 @@ port = db_config['port']
 
 logger.debug("DB connection details are : \n hostname : {0} \n dbname : {1} \n username : {2} \n password : {3} \n port : {4}".format(hostname, dbname, username, passwd, port))
 
-
-#dataDate = datetime.now().strftime('%Y%m%d %H:%M:%S')
-dataDate = datetime.now().strftime('%s')
-logger.info(dataDate)
+epoch = datetime.now().strftime('%s')
+logger.info(epoch)
 logger.debug("Inserting data in database")
 
 for key in hash_map:
     if hash_map[key] > 0:
-        insert_data(dataDate,input_web, key, hash_map[key])
+        insert_data(epoch, input_url, key, hash_map[key])
