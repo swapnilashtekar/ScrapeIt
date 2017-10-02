@@ -8,13 +8,14 @@ import json, time, re, string
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
+
 """
 Logging
 """
+
 logger = logging.getLogger('ScrapeIt Project')
 format = "%(asctime)s   [%(levelname)s]  [%(lineno)d] %(message)s"
 logging.basicConfig(format=format, level=logging.INFO)
-#logging.basicConfig(format=format, level=logging.DEBUG)
 
 
 def tag_visible(element):
@@ -39,8 +40,10 @@ def insert_data(epoch, input_url, word, word_count):
                             port=port,
                             db=dbname,
                             charset='utf8mb4')
+
     logger.debug("dataDate : {0} input_web : {1} word : {2} word type : {3} count : \
         {4}".format(epoch, input_url, word, type(word), word_count))
+
     try:
         with conn.cursor() as cursor:
             # Create a new record
@@ -80,7 +83,8 @@ for word in readable_content:
     else:
         cant_read.append(word)
 
-logger.debug("Excluded words are : {0} \n Number of excluded words are : {1}".format(cant_read, len(cant_read)))
+logger.debug("Excluded words are : {0} \n Number of excluded words \
+    are : {1}".format(cant_read, len(cant_read)))
 logger.debug("Printing words having count greater than 0: ")
 for key in hash_map:
     if hash_map[key] > 0:
